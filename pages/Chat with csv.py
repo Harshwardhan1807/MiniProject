@@ -8,7 +8,7 @@ from langchain_experimental.agents import create_pandas_dataframe_agent
 from langchain.agents import AgentType
 load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
-os.environ["GROQ_API_KEY"] = "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"
+os.environ["GROQ_API_KEY"] = ""
 
 llm = ChatGroq(temperature=0.2,groq_api_key=api_key,model_name="llama3-70b-8192")
 
