@@ -37,11 +37,11 @@ if uploaded_file:
     else:
         df = pd.read_excel(uploaded_file)
 
-
+    gender_map = {0: "Male", 1: "Female"}
     st.subheader("Gender Distribution")
-    gender_counts = df["gender"].value_counts()
+    gender_counts = df["gender"].map(gender_map).value_counts()  # Use map here for visualization
     plt.figure(figsize=(3, 3))
-    plt.pie(gender_counts, labels=["Male", "Female"], autopct="%1.1f%%", colors=["lightblue", "lightpink"], startangle=90)
+    plt.pie(gender_counts, labels=gender_counts.index, autopct="%1.1f%%", colors=["lightblue", "lightpink"], startangle=90)
     plt.title("Gender Distribution")
     st.pyplot(plt)
 
@@ -50,8 +50,7 @@ if uploaded_file:
 
     plt.figure(figsize=(8, 5))
     age_grp = pd.cut(df["age"], bins=age_bins, labels=age_labels, right=False)
-
-    sns.countplot(data=df, x=age_grp, hue="gender", palette=["blue", "pink"])
+    sns.countplot(data=df, x=age_grp, hue=df["gender"].map(gender_map), palette=["blue", "pink"])
     plt.xlabel("Age Group")
     plt.ylabel("Count")
     plt.title("Gender Distribution Across Age Groups")
