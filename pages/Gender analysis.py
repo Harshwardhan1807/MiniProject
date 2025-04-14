@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import chardet
 st.markdown(
     """
     <style>
@@ -30,7 +31,20 @@ st.markdown(
 uploaded_file = st.file_uploader("📂 Upload a CSV file", type=["csv"])
 
 if uploaded_file:
-    df = pd.read_csv(uploaded_file)
+    raw_data = uploaded_file.read()
+
+    # Detect encoding
+    result = chardet.detect(raw_data)
+    encoding = result['encoding']
+    confidence = result['confidence']
+
+    st.write(f"Detected encoding: {encoding} (Confidence: {confidence:.2f})")
+
+    # Go back to the beginning of the file (important!)
+    uploaded_file.seek(0)
+
+    # Read using detected encoding
+    df = pd.read_csv(uploaded_file, encoding=encoding)
 
     st.subheader("Gender Distribution")
     gender_counts = df["gender"].value_counts()
