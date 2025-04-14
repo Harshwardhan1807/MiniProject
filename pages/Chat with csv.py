@@ -106,7 +106,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-uploaded_file = st.file_uploader("📂 Upload a CSV file", type=["csv"])
+uploaded_file = st.file_uploader("📂 Upload a CSV file", type=["csv","xlsx"])
 
 
 if uploaded_file is not None:
