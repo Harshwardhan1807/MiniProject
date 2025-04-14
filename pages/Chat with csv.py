@@ -13,7 +13,6 @@ llm = ChatGroq(temperature=0.2,groq_api_key=api_key,model_name="llama3-70b-8192"
 
 custom_prompt = """
 You are an AI assistant analyzing customers' data. Answer questions with accurate insights. 
-0 gender represents male and 1 gender represents female.
 Avoid answering unrelated questions or making up answers. If you are not able to find just say so and dont make up answer.
 Don't repeat the information that you have already given in the output. Don't summarize the information in output keep it as it is.
 Don't think repeatedly, if you are unable to find correct ans just stop.If the user asks for a detailed report give ** atleast 10 to 15 sentences **.
