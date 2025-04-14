@@ -28,17 +28,14 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-uploaded_file = st.file_uploader("📂 Upload a CSV file", type=["csv"])
+uploaded_file = st.file_uploader("📂 Upload a CSV file", type=["csv","xlsx"])
 
 if uploaded_file:
-    try:
+    file_name = uploaded_file.name.lower()
+    if file_name.endswith('.csv'):
         df = pd.read_csv(uploaded_file)
-    except UnicodeDecodeError:
-        uploaded_file.seek(0)
-        raw_data = uploaded_file.read()
-        encoding = chardet.detect(raw_data)['encoding'] or 'latin1'
-        uploaded_file.seek(0)
-        df = pd.read_csv(uploaded_file, encoding=encoding)
+    else:
+        df = pd.read_excel(uploaded_file)
 
 
     st.subheader("Gender Distribution")
