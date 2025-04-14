@@ -85,13 +85,28 @@ st.markdown(
     unsafe_allow_html=True
 )
 # Title and description
-st.title("📊 Analysis Agent")
 st.markdown(
-    "Upload a CSV file and ask questions about your data. "
-    "Our AI-powered agent will analyze and provide insights! 🚀"
+    "<h1 style='color: #05074f;'>📊 Analysis Agent</h1>",
+    unsafe_allow_html=True
+)
+st.markdown(
+    """<h5 style='color: #05074f;'>Upload a CSV file and ask questions about your data. 
+    Our AI-powered agent will analyze and provide insights!</h5>""",
+    unsafe_allow_html=True
 )
 
+
 # File uploader
+st.markdown(
+    """
+    <style>
+    .stFileUploader > label {
+        display: none;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 uploaded_file = st.file_uploader("📂 Upload a CSV file", type=["csv"])
 
 # If a file is uploaded

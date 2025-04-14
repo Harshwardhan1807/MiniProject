@@ -60,16 +60,58 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-st.title("⏳ Peak Hour Analysis")
+st.markdown(
+    "<h1 style='color: #05074f;'>Peak Hour Analysis</h1>",
+    unsafe_allow_html=True
+)
+st.markdown(
+    """
+    <style>
+    .stFileUploader > label {
+        display: none;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+uploaded_file = st.file_uploader("📂 Upload a CSV file", type=["csv"])
 
-df = pd.read_csv("market_insights_data_variable.csv", parse_dates=["datetime"])
-df["hour"] = df["datetime"].dt.hour
+if uploaded_file:
+    # Read the CSV and parse the 'date' and 'time' columns as strings
+    df = pd.read_csv(uploaded_file)
+    
+    # Ensure 'time' is a string and extract hour from 'time' column
+    df['hour'] = pd.to_datetime(df['time'], format='%H:%M:%S').dt.hour
 
-hourly_counts = df.groupby("hour").size()
-plt.figure(figsize=(10, 5))
-sns.lineplot(x=hourly_counts.index, y=hourly_counts.values, marker='o', color='b')
-plt.xticks(range(9, 21))
-plt.xlabel("Hour of the Day") 
-plt.ylabel("Number of Visitors")
-plt.title("Customer Footfall by Hour")
-st.pyplot(plt)
+    # Count the number of visitors per hour
+    hourly_counts = df.groupby('hour').size()
+
+    # Plot the hourly visitor count
+    plt.figure(figsize=(10, 5))
+    sns.lineplot(x=hourly_counts.index, y=hourly_counts.values, marker='o', color='b')
+    plt.xticks(range(9, 21))  # Adjust to show hours from 9 AM to 9 PM
+    plt.xlabel("Hour of the Day") 
+    plt.ylabel("Number of Visitors")
+    plt.title("Customer Footfall by Hour")
+    st.pyplot(plt)
+    
+    df['hour'] = pd.to_datetime(df['time'], format='%H:%M:%S').dt.hour
+
+    # Ensure 'date' is in proper date format
+    df['date'] = pd.to_datetime(df['date']).dt.date
+
+    # Filter for hours between 9 AM and 9 PM
+    df = df[(df['hour'] >= 9) & (df['hour'] <= 21)]
+
+    # Group by date and hour and count visitors
+    hourly_visits = df.groupby(['date', 'hour']).size().unstack(fill_value=0)
+
+    # Plot heatmap
+    plt.figure(figsize=(12, 6))
+    sns.heatmap(hourly_visits.T, cmap="Blues", annot=True, fmt="d", linewidths=0.5)
+    plt.xlabel("Date")
+    plt.ylabel("Hour of the Day")
+    plt.title("Peak Hour Analysis (9 AM - 9 PM)")
+    plt.yticks(rotation=0)
+    plt.tight_layout()
+    st.pyplot(plt)
