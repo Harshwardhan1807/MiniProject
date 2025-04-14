@@ -77,36 +77,29 @@ st.markdown(
 uploaded_file = st.file_uploader("📂 Upload a CSV file", type=["csv"])
 
 if uploaded_file:
-    # Read the CSV and parse the 'date' and 'time' columns as strings
-    df = pd.read_csv(uploaded_file)
+    file_name = uploaded_file.name.lower()
+    if file_name.endswith('.csv'):
+        df = pd.read_csv(uploaded_file)
+    else:
+        df = pd.read_excel(uploaded_file)
     
-    # Ensure 'time' is a string and extract hour from 'time' column
+    
     df['hour'] = pd.to_datetime(df['time'], format='%H:%M:%S').dt.hour
-
-    # Count the number of visitors per hour
     hourly_counts = df.groupby('hour').size()
 
-    # Plot the hourly visitor count
+
     plt.figure(figsize=(10, 5))
     sns.lineplot(x=hourly_counts.index, y=hourly_counts.values, marker='o', color='b')
-    plt.xticks(range(9, 21))  # Adjust to show hours from 9 AM to 9 PM
+    plt.xticks(range(9, 21))  
     plt.xlabel("Hour of the Day") 
     plt.ylabel("Number of Visitors")
     plt.title("Customer Footfall by Hour")
     st.pyplot(plt)
     
     df['hour'] = pd.to_datetime(df['time'], format='%H:%M:%S').dt.hour
-
-    # Ensure 'date' is in proper date format
     df['date'] = pd.to_datetime(df['date']).dt.date
-
-    # Filter for hours between 9 AM and 9 PM
     df = df[(df['hour'] >= 9) & (df['hour'] <= 21)]
-
-    # Group by date and hour and count visitors
     hourly_visits = df.groupby(['date', 'hour']).size().unstack(fill_value=0)
-
-    # Plot heatmap
     plt.figure(figsize=(12, 6))
     sns.heatmap(hourly_visits.T, cmap="Blues", annot=True, fmt="d", linewidths=0.5)
     plt.xlabel("Date")

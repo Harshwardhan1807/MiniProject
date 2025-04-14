@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import chardet
+
 st.markdown(
     """
     <style>
@@ -45,7 +45,6 @@ if uploaded_file:
     plt.title("Gender Distribution")
     st.pyplot(plt)
 
-    # Countplot to visualize gender distribution across age groups
     age_bins = [0, 18, 35, 50, 100]
     age_labels = ["0-18", "19-35", "36-50", "51+"]
 

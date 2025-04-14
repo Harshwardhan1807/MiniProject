@@ -30,8 +30,11 @@ st.markdown(
 uploaded_file = st.file_uploader("📂 Upload a CSV file", type=["csv"])
 
 if uploaded_file:
-    df = pd.read_csv(uploaded_file)
-
+    file_name = uploaded_file.name.lower()
+    if file_name.endswith('.csv'):
+        df = pd.read_csv(uploaded_file)
+    else:
+        df = pd.read_excel(uploaded_file)
 
     st.subheader("Age Distribution")
     plt.figure(figsize=(10, 5))
@@ -41,19 +44,10 @@ if uploaded_file:
     plt.title("Age Distribution of Customers")
     st.pyplot(plt)
 
-    
-
-    # Define age bins
     age_bins = [0, 18, 35, 50, 100]
     age_labels = ["0-18", "19-35", "36-50", "51+"]
-
-    # Create an age group column
-    df["age_group"] = pd.cut(df["age"], bins=age_bins, labels=age_labels, right=False)
-
-    # Count the number of people in each age group
-    age_distribution = df["age_group"].value_counts().sort_index()
-
-    # Plot age distribution
+    age_group = pd.cut(df["age"], bins=age_bins, labels=age_labels, right=False)
+    age_distribution = age_group.value_counts().sort_index()
     plt.figure(figsize=(8, 5))
     age_distribution.plot(kind="bar", color="skyblue")
     plt.xlabel("Age Group")

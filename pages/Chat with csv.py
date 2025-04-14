@@ -109,16 +109,19 @@ st.markdown(
 )
 uploaded_file = st.file_uploader("📂 Upload a CSV file", type=["csv"])
 
-# If a file is uploaded
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
 
-    # Display file details
+if uploaded_file is not None:
+    file_name = uploaded_file.name.lower()
+    if file_name.endswith('.csv'):
+        df = pd.read_csv(uploaded_file)
+    else:
+        df = pd.read_excel(uploaded_file)
+
     st.success("✅ File uploaded successfully!")
     st.subheader("🔍 Data Preview")
-    st.dataframe(df.head())  # Better UI with st.dataframe()
+    st.dataframe(df.head())  
 
-    # Create the AI agent
+
     agent = create_pandas_dataframe_agent(
         llm, df, verbose=True, 
         agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
@@ -126,11 +129,11 @@ if uploaded_file is not None:
         allow_dangerous_code=True
     )
 
-    # Input field for user query
+
     st.subheader("💡 Ask a question about your data")
     query = st.text_input("🔎 Enter your question below:", key="query")
 
-    # Button to get an answer
+
     if st.button("💬 Get Answer", key="button"):
         if query:
             message = st.empty()
@@ -138,7 +141,7 @@ if uploaded_file is not None:
 
             response = agent.run(custom_prompt + query)
 
-            message.empty()  # Remove processing message
+            message.empty()  
             st.subheader("📌 Response")
             st.text_area("📝 AI's Answer", value=response, height=300)
 
